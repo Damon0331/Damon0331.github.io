@@ -5,45 +5,40 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
   <meta name="format-detection" content="telephone=no" />
-  <title>上市详情</title>
+  <title>JS Bridge Test Page</title>
   <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
 </head>
 
-<body>hello world!!!!!!!!!</body>
+<body>Hello world!!!!!!!!!</body>
 <script>
   (function (window, $, undefined) {
     $(document).ready(function () {
       console.log('1111');
+      setupWebViewJavascriptBridge(function (bridge) {
+        bridge.registerHandler("CommonCallback", function (message, responseCallback) {
+          //alert('Received message: ' + message);
+          if (message) {
 
-      connectWebViewJavascriptBridge(function (bridge) {
-        console.log('JS 开始', message);
-        bridge.init(function (message, responseCallback) {
-          if (message) { }
+          }
         });
-        var data = {
-          "action": "getUserToken"
-        };
-        bridge.callHandler('CommonCallback', data, function (response) { });
-        console.log('JS responding with', message);
       });
-      var data = {
-        "action": "getUserToken"
-      };
-      // window.WebViewJavascriptBridge.callHandler('CommonCallback', data, function(response) {});
     });
 
-    function connectWebViewJavascriptBridge(callback) {
+    function setupWebViewJavascriptBridge(callback) {
       if (window.WebViewJavascriptBridge) {
-
-        callback(WebViewJavascriptBridge);
-        console.log('-------');
-      } else {
-        document.addEventListener('WebViewJavascriptBridgeReady', function () {
-          console.log('readyyyyyyyy');
-          callback(WebViewJavascriptBridge);
-        }, false);
-        console.log('========');
+        return callback(WebViewJavascriptBridge);
       }
+      if (window.WVJBCallbacks) {
+        return window.WVJBCallbacks.push(callback);
+      }
+      window.WVJBCallbacks = [callback];
+      var WVJBIframe = document.createElement('iframe');
+      WVJBIframe.style.display = 'none';
+      WVJBIframe.src = 'https://__bridge_loaded__';
+      document.documentElement.appendChild(WVJBIframe);
+      setTimeout(function () {
+        document.documentElement.removeChild(WVJBIframe)
+      }, 0)
     }
   })(window, jQuery);
 </script>
