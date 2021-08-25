@@ -1,1 +1,51 @@
-Hello World
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=3, minimum-scale=1, user-scalable=no">
+  <meta name="format-detection" content="telephone=no" />
+  <title>上市详情</title>
+  <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+</head>
+
+<body>hello world!!!!!!!!!</body>
+<script>
+  (function (window, $, undefined) {
+    $(document).ready(function () {
+      console.log('1111');
+
+      connectWebViewJavascriptBridge(function (bridge) {
+        console.log('JS 开始', message);
+        bridge.init(function (message, responseCallback) {
+          if (message) { }
+        });
+        var data = {
+          "action": "getUserToken"
+        };
+        bridge.callHandler('CommonCallback', data, function (response) { });
+        console.log('JS responding with', message);
+      });
+      var data = {
+        "action": "getUserToken"
+      };
+      // window.WebViewJavascriptBridge.callHandler('CommonCallback', data, function(response) {});
+    });
+
+    function connectWebViewJavascriptBridge(callback) {
+      if (window.WebViewJavascriptBridge) {
+
+        callback(WebViewJavascriptBridge);
+        console.log('-------');
+      } else {
+        document.addEventListener('WebViewJavascriptBridgeReady', function () {
+          console.log('readyyyyyyyy');
+          callback(WebViewJavascriptBridge);
+        }, false);
+        console.log('========');
+      }
+    }
+  })(window, jQuery);
+</script>
+
+</html>
